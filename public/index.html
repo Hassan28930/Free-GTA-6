@@ -1,0 +1,1504 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0F0720" />
+    <!--SEO_META-->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Nunito:wght@700;800;900&family=JetBrains+Mono:wght@700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #0f0720;
+        --card: #1a0e36;
+        --card-soft: #241449;
+        --border: rgba(255, 255, 255, 0.11);
+        --text: #faf7ff;
+        --muted: rgba(250, 247, 255, 0.68);
+        --cyan: #00b4d8;
+        --teal: #2ec4b6;
+        --violet: #7b2cbf;
+        --gold: #ffbe42;
+        --orange: #ff9f1c;
+        --pink: #f72585;
+        --blue-link: #38bdf8;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: 'Nunito', ui-rounded, system-ui, -apple-system, sans-serif;
+        background-color: var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+        background-image:
+          radial-gradient(circle at 15% 10%, rgba(123, 44, 191, 0.34) 0%, transparent 36%),
+          radial-gradient(circle at 86% 18%, rgba(0, 180, 216, 0.22) 0%, transparent 32%);
+        line-height: 1.5;
+      }
+
+      h1, h2, h3, .font-display {
+        font-family: 'Fredoka', 'Nunito', ui-rounded, system-ui, sans-serif;
+      }
+
+      .container {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 0 18px;
+      }
+
+      header {
+        backdrop-filter: blur(12px);
+        background: rgba(15, 7, 32, 0.85);
+        border-bottom: 1.5px solid var(--border);
+      }
+
+      .nav-inner {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 12px 18px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--text);
+        text-decoration: none;
+        font-family: 'Fredoka', sans-serif;
+        font-size: 1.25rem;
+        font-weight: 700;
+      }
+
+      .brand span {
+        color: var(--cyan);
+      }
+
+      .live-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 7px 14px;
+        border-radius: 9999px;
+        background: var(--card-soft);
+        border: 1.5px solid var(--border);
+        font-size: 0.78rem;
+        font-weight: 900;
+      }
+
+      .dot-live {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: var(--teal);
+        box-shadow: 0 0 10px var(--teal);
+        animation: pulse 1.8s infinite;
+      }
+
+      @keyframes pulse {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.45; transform: scale(0.85); }
+      }
+
+      main {
+        padding: 26px 0 46px;
+      }
+
+      .hero-head {
+        text-align: center;
+        margin-bottom: 18px;
+      }
+
+      h1 {
+        font-size: clamp(1.6rem, 3.6vw, 2.35rem);
+        line-height: 1.18;
+        margin-bottom: 8px;
+      }
+
+      .hero-sub {
+        color: var(--muted);
+        font-size: 0.94rem;
+        font-weight: 700;
+        max-width: 560px;
+        margin: 0 auto;
+      }
+
+      .stage-frame {
+        background: var(--card);
+        border: 2.5px solid var(--border);
+        border-radius: 30px;
+        padding: 12px;
+        box-shadow: 0 24px 60px -15px rgba(0, 0, 0, 0.65);
+      }
+
+      .stage-topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 2px 8px 10px;
+        gap: 10px;
+      }
+
+      .window-dots {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+      }
+
+      .w-dot {
+        width: 11px;
+        height: 11px;
+        border-radius: 50%;
+      }
+
+      .stage-title {
+        font-size: 0.78rem;
+        font-weight: 800;
+        color: var(--muted);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .video-box {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        border-radius: 22px;
+        overflow: hidden;
+        background: #090414;
+      }
+
+      .video-box iframe,
+      .video-box canvas {
+        width: 100%;
+        height: 100%;
+        display: block;
+        border: 0;
+      }
+
+      .video-overlay-tag {
+        position: absolute;
+        top: 14px;
+        left: 14px;
+        background: rgba(15, 7, 32, 0.85);
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        padding: 6px 13px;
+        border-radius: 9999px;
+        font-size: 0.76rem;
+        font-weight: 900;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        pointer-events: none;
+      }
+
+      .tag-live {
+        background: var(--teal);
+        color: #0f0720;
+        padding: 2px 8px;
+        border-radius: 9999px;
+        font-size: 0.68rem;
+        font-weight: 900;
+      }
+
+      .action-bar {
+        margin-top: 14px;
+        display: grid;
+        grid-template-columns: minmax(190px, 1fr) minmax(260px, 2fr);
+        gap: 12px;
+        align-items: stretch;
+      }
+
+      @media (max-width: 600px) {
+        .action-bar {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .watching-card {
+        background: var(--card);
+        border: 2px solid var(--border);
+        border-radius: 22px;
+        padding: 14px 18px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .watching-label {
+        font-size: 0.7rem;
+        font-weight: 900;
+        letter-spacing: 0.08em;
+        color: var(--muted);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .watching-value {
+        font-family: 'Fredoka', sans-serif;
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-top: 2px;
+      }
+
+      .watching-badge {
+        padding: 5px 11px;
+        border-radius: 9999px;
+        background: rgba(46, 196, 182, 0.16);
+        color: var(--teal);
+        font-size: 0.72rem;
+        font-weight: 900;
+      }
+
+      .cta-btn {
+        width: 100%;
+        min-height: 66px;
+        border: 0;
+        border-radius: 22px;
+        background: linear-gradient(135deg, var(--gold), var(--orange));
+        color: #130826;
+        font-family: 'Fredoka', sans-serif;
+        font-size: 1.15rem;
+        font-weight: 700;
+        cursor: pointer;
+        box-shadow: 0 6px 0 #b86700, 0 14px 30px rgba(255, 159, 28, 0.28);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        padding: 14px 22px;
+        transition: transform 0.14s ease, filter 0.14s ease;
+      }
+
+      .cta-btn:hover {
+        filter: brightness(1.06);
+        transform: translateY(-1px);
+      }
+
+      .cta-btn:active {
+        transform: translateY(3px);
+        box-shadow: 0 2px 0 #b86700;
+      }
+
+      .faq-section {
+        margin-top: 28px;
+        background: var(--card);
+        border: 2px solid var(--border);
+        border-radius: 26px;
+        padding: 20px;
+      }
+
+      .faq-section h2 {
+        font-size: 1.1rem;
+        margin-bottom: 12px;
+      }
+
+      .faq-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+        gap: 12px;
+      }
+
+      .faq-item {
+        background: var(--card-soft);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 14px;
+      }
+
+      .faq-item h3 {
+        font-size: 0.85rem;
+        color: var(--cyan);
+        margin-bottom: 5px;
+      }
+
+      .faq-item p {
+        font-size: 0.79rem;
+        color: var(--muted);
+        font-weight: 700;
+      }
+
+      footer {
+        text-align: center;
+        margin-top: 24px;
+        color: var(--muted);
+        font-size: 0.78rem;
+        font-weight: 700;
+      }
+
+      .admin-footer-link {
+        color: var(--blue-link);
+        background: none;
+        border: 0;
+        font: inherit;
+        font-weight: 800;
+        cursor: pointer;
+        text-decoration: underline;
+        margin-left: 6px;
+        padding: 0;
+      }
+
+      .admin-footer-link:hover {
+        color: #7dd3fc;
+      }
+
+      /* Modals */
+      .modal-backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 50;
+        background: rgba(9, 4, 20, 0.85);
+        backdrop-filter: blur(8px);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+      }
+
+      .modal-backdrop.open {
+        display: flex;
+      }
+
+      .modal-card {
+        width: 100%;
+        max-width: 520px;
+        background: var(--card);
+        border: 2.5px solid rgba(255, 255, 255, 0.16);
+        border-radius: 30px;
+        overflow: hidden;
+        box-shadow: 0 30px 80px rgba(0, 0, 0, 0.75);
+      }
+
+      .modal-card.wide {
+        max-width: 980px;
+      }
+
+      .modal-head {
+        background: var(--card-soft);
+        padding: 16px 22px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1.5px solid var(--border);
+        gap: 12px;
+      }
+
+      .modal-head h2 {
+        font-size: 1.15rem;
+      }
+
+      .modal-head p {
+        font-size: 0.76rem;
+        color: var(--cyan);
+        font-weight: 800;
+      }
+
+      .close-btn {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        border: 0;
+        background: rgba(255, 255, 255, 0.12);
+        color: var(--text);
+        font-size: 1.1rem;
+        font-weight: 900;
+        cursor: pointer;
+        flex-shrink: 0;
+      }
+
+      .close-btn:hover {
+        background: var(--pink);
+      }
+
+      .modal-body {
+        padding: 20px 22px 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        max-height: 82vh;
+        overflow-y: auto;
+      }
+
+      .progress-track {
+        width: 100%;
+        height: 10px;
+        background: #0f0720;
+        border-radius: 9999px;
+        overflow: hidden;
+      }
+
+      .progress-fill {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, var(--violet), var(--cyan), var(--teal));
+        transition: width 0.35s ease;
+      }
+
+      .step-card {
+        background: var(--card-soft);
+        border: 1.5px solid var(--border);
+        border-radius: 20px;
+        padding: 12px 14px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .step-card.done {
+        border-color: var(--teal);
+        background: rgba(46, 196, 182, 0.11);
+      }
+
+      .step-card.locked {
+        opacity: 0.52;
+      }
+
+      .step-left {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        min-width: 0;
+      }
+
+      .step-num {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: var(--violet);
+        color: #fff;
+        font-family: 'Fredoka', sans-serif;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+
+      .step-card.done .step-num {
+        background: var(--teal);
+        color: #0f0720;
+      }
+
+      .step-title {
+        font-size: 0.86rem;
+        font-weight: 900;
+      }
+
+      .step-desc {
+        font-size: 0.73rem;
+        color: var(--muted);
+        font-weight: 700;
+      }
+
+      .step-btn {
+        border: 0;
+        border-radius: 9999px;
+        padding: 8px 14px;
+        font-size: 0.76rem;
+        font-weight: 900;
+        cursor: pointer;
+        flex-shrink: 0;
+        background: var(--cyan);
+        color: #0f0720;
+      }
+
+      .step-btn:hover:not(:disabled) {
+        background: var(--gold);
+      }
+
+      .step-btn:disabled {
+        cursor: not-allowed;
+        opacity: 0.72;
+      }
+
+      .step-card.done .step-btn {
+        background: var(--teal);
+        color: #0f0720;
+      }
+
+      .final-btn {
+        margin-top: 4px;
+        width: 100%;
+        padding: 14px;
+        border: 0;
+        border-radius: 9999px;
+        background: linear-gradient(135deg, var(--teal), var(--cyan));
+        color: #0f0720;
+        font-family: 'Fredoka', sans-serif;
+        font-size: 1.02rem;
+        font-weight: 700;
+        cursor: pointer;
+        box-shadow: 0 5px 0 #0d7a72;
+      }
+
+      .final-btn:disabled {
+        background: #2b1957;
+        color: rgba(255, 255, 255, 0.45);
+        box-shadow: none;
+        cursor: not-allowed;
+      }
+
+      /* Admin Login & Dashboard Styles */
+      .field-label {
+        display: block;
+        font-size: 0.72rem;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--muted);
+        margin-bottom: 5px;
+      }
+
+      .input-dark {
+        width: 100%;
+        padding: 11px 14px;
+        border-radius: 16px;
+        border: 1.5px solid var(--border);
+        background: #0f0720;
+        color: var(--text);
+        font-family: inherit;
+        font-size: 0.85rem;
+        font-weight: 700;
+        outline: none;
+      }
+
+      .input-dark:focus {
+        border-color: var(--cyan);
+      }
+
+      .err-box {
+        padding: 10px 14px;
+        border-radius: 14px;
+        background: rgba(247, 37, 133, 0.16);
+        border: 1px solid rgba(247, 37, 133, 0.4);
+        color: #ff85bc;
+        font-size: 0.78rem;
+        font-weight: 800;
+      }
+
+      .ok-box {
+        padding: 10px 14px;
+        border-radius: 14px;
+        background: rgba(46, 196, 182, 0.16);
+        border: 1px solid rgba(46, 196, 182, 0.4);
+        color: var(--teal);
+        font-size: 0.78rem;
+        font-weight: 800;
+      }
+
+      .admin-kpi-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+        gap: 10px;
+      }
+
+      .kpi-card {
+        background: var(--card-soft);
+        border: 1.5px solid var(--border);
+        border-radius: 20px;
+        padding: 14px;
+      }
+
+      .kpi-label {
+        font-size: 0.68rem;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--muted);
+      }
+
+      .kpi-val {
+        font-family: 'Fredoka', sans-serif;
+        font-size: 1.55rem;
+        margin-top: 3px;
+      }
+
+      .kpi-sub {
+        font-size: 0.72rem;
+        font-weight: 800;
+        color: var(--teal);
+        margin-top: 2px;
+      }
+
+      .charts-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 12px;
+      }
+
+      .panel-box {
+        background: var(--card-soft);
+        border: 1.5px solid var(--border);
+        border-radius: 22px;
+        padding: 16px;
+      }
+
+      .panel-box h3 {
+        font-size: 0.95rem;
+        margin-bottom: 10px;
+      }
+
+      .funnel-row {
+        display: grid;
+        grid-template-columns: 120px 1fr 56px;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 8px;
+        font-size: 0.75rem;
+        font-weight: 800;
+      }
+
+      .funnel-track {
+        height: 12px;
+        background: #0f0720;
+        border-radius: 9999px;
+        overflow: hidden;
+      }
+
+      .funnel-bar {
+        height: 100%;
+        border-radius: 9999px;
+      }
+
+      .data-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.75rem;
+      }
+
+      .data-table th {
+        text-align: left;
+        padding: 8px;
+        color: var(--muted);
+        font-size: 0.68rem;
+        text-transform: uppercase;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .data-table td {
+        padding: 8px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        font-weight: 700;
+      }
+
+      .pill-btn-sm {
+        border: 0;
+        border-radius: 9999px;
+        padding: 6px 13px;
+        font-size: 0.74rem;
+        font-weight: 900;
+        cursor: pointer;
+      }
+
+      /* Non-Intrusive AdSense Placements */
+      [hidden] {
+        display: none !important;
+      }
+
+      .ad-banner-wrap {
+        max-width: 960px;
+        margin: 18px auto 0;
+        padding: 0 18px;
+      }
+
+      .ad-bottom-wrap {
+        margin-top: 24px;
+        margin-bottom: 8px;
+      }
+
+      .page-shell {
+        width: 100%;
+      }
+
+      .page-shell.has-sidebars {
+        max-width: 1380px;
+        margin: 0 auto;
+        padding: 0 18px;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        gap: 22px;
+      }
+
+      .page-shell.has-sidebars > main.container {
+        flex: 1 1 auto;
+        min-width: 0;
+        max-width: 960px;
+        margin: 0;
+        padding-left: 0;
+        padding-right: 0;
+      }
+
+      .ad-sidebar-col {
+        flex: 0 0 160px;
+        width: 160px;
+        margin-top: 26px;
+      }
+
+      .ad-slot-card {
+        background: rgba(26, 14, 54, 0.58);
+        border: 1px solid rgba(255, 255, 255, 0.09);
+        border-radius: 18px;
+        padding: 8px 10px 10px;
+        text-align: center;
+        overflow: hidden;
+      }
+
+      .ad-slot-banner-card {
+        min-height: 98px;
+      }
+
+      .ad-slot-sidebar-card {
+        min-height: 260px;
+      }
+
+      .ad-label {
+        font-size: 0.62rem;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: rgba(250, 247, 255, 0.45);
+        margin-bottom: 6px;
+        user-select: none;
+      }
+
+      @media (max-width: 1339px) {
+        .ad-sidebar-col {
+          display: none !important;
+        }
+        .page-shell.has-sidebars {
+          display: block;
+          padding: 0;
+        }
+        .page-shell.has-sidebars > main.container {
+          margin: 0 auto;
+          padding-left: 18px;
+          padding-right: 18px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="nav-inner">
+        <a href="/" class="brand" aria-label="PlayGTA Home">
+          <svg width="34" height="34" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+            <rect x="4" y="4" width="56" height="56" rx="18" fill="#7B2CBF" />
+            <rect x="8" y="8" width="48" height="48" rx="14" fill="#1A0E36" />
+            <path
+              d="M21 26C16.5 26 13 30 12 36C11.2 41 14 44 17.5 44C20 44 21.8 41.5 24 39.5H40C42.2 41.5 44 44 46.5 44C50 44 52.8 41 52 36C51 30 47.5 26 43 26H21Z"
+              fill="#00B4D8"
+            />
+            <circle cx="43" cy="31.5" r="2.2" fill="#FFBE42" />
+            <circle cx="46.8" cy="35" r="2.2" fill="#F72585" />
+            <circle cx="39.2" cy="35" r="2.2" fill="#2EC4B6" />
+          </svg>
+          <div>Play<span>GTA</span></div>
+        </a>
+
+        <div class="live-pill">
+          <span class="dot-live"></span>
+          <span id="header-watching">2,639 watching</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Top Banner Ad Slot (normal flow below header, hidden until configured) -->
+    <aside id="ad-slot-top" class="ad-banner-wrap" aria-label="Advertisement" hidden></aside>
+
+    <div id="page-shell" class="page-shell">
+      <!-- Left Sidebar Ad Slot (desktop wide screens only, hidden until configured) -->
+      <aside id="ad-slot-left" class="ad-sidebar-col" aria-label="Advertisement" hidden></aside>
+
+      <main class="container">
+      <section class="hero-head">
+        <h1>Play GTA 6 Free — Watch Live &amp; Join Queue</h1>
+        <p class="hero-sub">
+          Watch the live Grand Theft Auto VI stream below and unlock your free access in 4 quick 10-second steps.
+        </p>
+      </section>
+
+      <!-- Live Stream Player -->
+      <section class="stage-frame" aria-label="GTA 6 Live Stream Player">
+        <div class="stage-topbar">
+          <div class="window-dots" aria-hidden="true">
+            <span class="w-dot" style="background: #ff6b6b"></span>
+            <span class="w-dot" style="background: #ffbe42"></span>
+            <span class="w-dot" style="background: #2ec4b6"></span>
+          </div>
+          <div id="stream-title" class="stage-title">
+            Grand Theft Auto VI — Live Stream &amp; Free Play
+          </div>
+        </div>
+
+        <div class="video-box" id="video-box">
+          <canvas id="demo-canvas" width="960" height="540" aria-label="GTA 6 Live Stream"></canvas>
+          <div class="video-overlay-tag">
+            <span class="tag-live">LIVE</span>
+            <span id="overlay-watching">2,639 watching</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Live Watching + Join Queue / Play GTA 6 Free Button -->
+      <section class="action-bar" aria-label="Live Watching and Join Button">
+        <div class="watching-card">
+          <div>
+            <div class="watching-label">
+              <span class="dot-live" style="width: 7px; height: 7px"></span>
+              LIVE WATCHING
+            </div>
+            <div class="watching-value" id="metric-watching">2,639</div>
+          </div>
+          <span class="watching-badge">LIVE</span>
+        </div>
+
+        <button id="join-queue-btn" class="cta-btn" type="button">
+          <span>Join Queue / Play GTA 6 Free</span>
+          <span aria-hidden="true">&rsaquo;</span>
+        </button>
+      </section>
+
+      <!-- SEO FAQ -->
+      <section class="faq-section" aria-label="Frequently Asked Questions">
+        <h2>About PlayGTA — Live GTA 6 Stream &amp; Free Access</h2>
+        <div class="faq-grid">
+          <article class="faq-item">
+            <h3>How do I join and play GTA 6 for free?</h3>
+            <p>
+              Watch the live stream player, click the &ldquo;Join Queue / Play GTA 6 Free&rdquo; button, and click &ldquo;Skip ad to continue&rdquo; to complete the shortlink and open your free GTA VI play link.
+            </p>
+          </article>
+          <article class="faq-item">
+            <h3>When did Grand Theft Auto VI (GTA 6) launch and where is it set?</h3>
+            <p>
+              Rockstar Games released Grand Theft Auto VI on November 19, 2026 for PlayStation 5 and Xbox Series X|S, set across Vice City and the State of Leonida with protagonists Jason Duval and Lucia Caminos.
+            </p>
+          </article>
+          <article class="faq-item">
+            <h3>Is the live watching count updated in real time?</h3>
+            <p>
+              Yes. The live watching badge displays real-time concurrent viewers from the live YouTube stream via the YouTube Data API.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <!-- Bottom Banner Ad Slot (normal flow before footer, hidden until configured) -->
+      <aside id="ad-slot-bottom" class="ad-bottom-wrap" aria-label="Advertisement" hidden></aside>
+
+      <footer>
+        Unofficial GTA VI fan stream &bull; No affiliation with Rockstar Games or Take-Two Interactive.
+        <button id="open-admin-link" class="admin-footer-link" type="button">Admin Login</button>
+      </footer>
+    </main>
+
+      <!-- Right Sidebar Ad Slot (desktop wide screens only, hidden until configured) -->
+      <aside id="ad-slot-right" class="ad-sidebar-col" aria-label="Advertisement" hidden></aside>
+    </div>
+
+    <!-- Shortlink Popup -->
+    <div id="ad-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <div class="modal-card" style="max-width: 480px; background: #0e071c; border-color: rgba(255, 255, 255, 0.14); position: relative;">
+        <button
+          id="close-modal-btn"
+          class="close-btn"
+          type="button"
+          aria-label="Close modal"
+          style="position: absolute; top: 14px; right: 14px;"
+        >&times;</button>
+        <div class="modal-body" style="padding: 44px 28px 38px; text-align: center; align-items: center; gap: 10px;">
+          <h2 id="modal-title" style="font-size: 1.45rem; font-weight: 700; color: #f3f1f8; line-height: 1.25;">
+            Please skip the ad to Play/join
+          </h2>
+          <p style="font-size: 0.92rem; color: rgba(250, 247, 255, 0.62); font-weight: 700; margin-bottom: 12px;">
+            Only needed once every 24 hours.
+          </p>
+          <button
+            id="skip-ad-btn"
+            type="button"
+            style="
+              border: 0;
+              border-radius: 14px;
+              background: #d33434;
+              color: #ffffff;
+              font-family: 'Nunito', ui-rounded, system-ui, sans-serif;
+              font-size: 1.02rem;
+              font-weight: 800;
+              padding: 14px 32px;
+              cursor: pointer;
+              box-shadow: 0 8px 24px rgba(211, 52, 52, 0.35);
+              transition: transform 0.14s ease, background 0.14s ease;
+            "
+            onmouseover="this.style.background='#e14242'"
+            onmouseout="this.style.background='#d33434'"
+          >
+            Skip ad to continue
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Admin Login Modal (Only for Admin) -->
+    <div id="admin-login-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="admin-login-title">
+      <div class="modal-card">
+        <div class="modal-head">
+          <div>
+            <h2 id="admin-login-title">Admin Login</h2>
+            <p>Restricted access &bull; 3 wrong attempts lock for 10 minutes</p>
+          </div>
+          <button id="close-admin-login-btn" class="close-btn" type="button" aria-label="Close">&times;</button>
+        </div>
+        <form id="admin-login-form" class="modal-body">
+          <div>
+            <label class="field-label" for="admin-email">Admin Gmail</label>
+            <input id="admin-email" class="input-dark" type="email" required placeholder="Enter admin Gmail" autocomplete="email" autocapitalize="none" spellcheck="false" />
+          </div>
+          <div>
+            <label class="field-label" for="admin-name">Admin Name</label>
+            <input id="admin-name" class="input-dark" type="text" required placeholder="Enter full name" autocomplete="name" />
+          </div>
+          <div>
+            <label class="field-label" for="admin-password">Password</label>
+            <div style="position: relative; display: flex; align-items: center;">
+              <input id="admin-password" class="input-dark" style="padding-right: 68px;" type="password" required placeholder="Enter password" autocomplete="current-password" autocapitalize="none" spellcheck="false" />
+              <button id="toggle-admin-pw" type="button" style="position: absolute; right: 10px; background: rgba(255,255,255,0.1); border: 0; border-radius: 10px; color: var(--cyan); font-size: 0.72rem; font-weight: 800; padding: 5px 9px; cursor: pointer;">Show</button>
+            </div>
+          </div>
+          <div id="admin-login-error" class="err-box" style="display: none"></div>
+          <button id="admin-login-submit" class="final-btn" type="submit">
+            Login to Admin Panel
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Admin Analytics & Config Panel Modal -->
+    <div id="admin-panel-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="admin-panel-title">
+      <div class="modal-card wide">
+        <div class="modal-head">
+          <div>
+            <h2 id="admin-panel-title">Admin Analytics &amp; Stream Control</h2>
+            <p id="admin-panel-subtitle">Muhammad Hassan &bull; Live Visitor Funnel, Stay Time &amp; Ad Steps</p>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px">
+            <button id="admin-refresh-btn" class="pill-btn-sm" type="button" style="background: var(--cyan); color: #0f0720">Refresh</button>
+            <button id="admin-logout-btn" class="pill-btn-sm" type="button" style="background: var(--pink); color: #fff">Logout</button>
+            <button id="close-admin-panel-btn" class="close-btn" type="button" aria-label="Close">&times;</button>
+          </div>
+        </div>
+        <div class="modal-body">
+          <!-- KPI Summary Cards -->
+          <div class="admin-kpi-grid" id="admin-kpis"></div>
+
+          <!-- Graphs -->
+          <div class="charts-grid">
+            <div class="panel-box">
+              <h3>User Funnel &amp; Shortlink Conversion</h3>
+              <div id="funnel-chart"></div>
+            </div>
+            <div class="panel-box">
+              <h3>Hourly Visits, Join Clicks &amp; Avg Stay Time</h3>
+              <div id="hourly-svg-chart"></div>
+            </div>
+          </div>
+
+          <!-- Detailed Tables -->
+          <div class="panel-box">
+            <h3>Recent User Sessions &amp; Stay Time</h3>
+            <div style="overflow-x: auto; max-height: 240px">
+              <table class="data-table" id="sessions-table"></table>
+            </div>
+          </div>
+
+          <!-- Stream, API & Shortlink Config Editor -->
+          <form id="admin-config-form" class="panel-box" style="display: flex; flex-direction: column; gap: 10px">
+            <h3>Manage YouTube Stream, API Key &amp; Shortlink</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px">
+              <div>
+                <label class="field-label">YouTube Stream / Video Link</label>
+                <input id="cfg-yt-url" class="input-dark" type="text" placeholder="https://www.youtube.com/watch?v=..." />
+              </div>
+              <div>
+                <label class="field-label">YouTube Data API v3 Key</label>
+                <input id="cfg-yt-key" class="input-dark" type="password" placeholder="AIzaSy..." />
+              </div>
+              <div>
+                <label class="field-label">Shortlink URL (Skip ad to continue — same tab)</label>
+                <input id="cfg-shortlink-url" class="input-dark" type="text" placeholder="https://..." />
+              </div>
+              <div>
+                <label class="field-label">Stream Title</label>
+                <input id="cfg-title" class="input-dark" type="text" />
+              </div>
+            </div>
+            <div id="admin-cfg-saved" class="ok-box" style="display: none"></div>
+            <button class="final-btn" type="submit" style="margin-top: 2px">Save Links &amp; API Settings</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // ---------------- SAFE STORAGE HELPERS ----------------
+      function safeStoreGet(storage, key) {
+        try {
+          return storage.getItem(key) || '';
+        } catch {
+          return '';
+        }
+      }
+      function safeStoreSet(storage, key, val) {
+        try {
+          storage.setItem(key, val);
+        } catch {}
+      }
+      function safeStoreRemove(storage, key) {
+        try {
+          storage.removeItem(key);
+        } catch {}
+      }
+
+      // ---------------- SESSION & REAL ANALYTICS TRACKING ----------------
+      const sessionId =
+        safeStoreGet(window.sessionStorage, 'playgta_sid') ||
+        'vis-' + Math.random().toString(36).slice(2, 8);
+      safeStoreSet(window.sessionStorage, 'playgta_sid', sessionId);
+      const pageStartMs = Date.now();
+
+      function sendTrack(event, extra = {}, useBeacon = false) {
+        const staySeconds = Math.max(1, Math.round((Date.now() - pageStartMs) / 1000));
+        const payload = JSON.stringify({ sessionId, event, staySeconds, ...extra });
+        if (useBeacon && navigator.sendBeacon) {
+          navigator.sendBeacon('/api/track', payload);
+        } else {
+          fetch('/api/track', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: payload,
+            keepalive: true,
+          }).catch(() => {});
+        }
+      }
+
+      sendTrack('visit');
+      setInterval(() => sendTrack('heartbeat'), 10000);
+      window.addEventListener('pagehide', () => sendTrack('heartbeat', {}, true));
+
+      // ---------------- STREAM & SHORTLINK POPUP ----------------
+      const state = {
+        shortlinkUrl: 'https://example.com/shortlink-skip-ad',
+        adminToken: safeStoreGet(window.localStorage, 'playgta_admin_token'),
+        lockoutTimer: null,
+        isLockedOut: false,
+      };
+
+      async function loadStreamInfo() {
+        try {
+          const res = await fetch('/api/stream-info');
+          const data = await res.json();
+
+          const watchingStr = Number(data.liveWatching || 2639).toLocaleString('en-US');
+          document.getElementById('stream-title').textContent = data.streamTitle;
+          document.getElementById('header-watching').textContent = watchingStr + ' watching';
+          document.getElementById('overlay-watching').textContent = watchingStr + ' watching';
+          document.getElementById('metric-watching').textContent = watchingStr;
+
+          state.shortlinkUrl = data.shortlinkUrl || state.shortlinkUrl;
+
+          if (data.youtubeVideoId) {
+            const box = document.getElementById('video-box');
+            box.innerHTML = `<iframe src="https://www.youtube.com/embed/${data.youtubeVideoId}?autoplay=1&mute=1&rel=0&modestbranding=1" title="${data.streamTitle}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
+          }
+        } catch (err) {
+          console.error('Could not load stream info:', err);
+        }
+      }
+
+      function startDemoCanvas() {
+        const canvas = document.getElementById('demo-canvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        let t = 0;
+
+        function draw() {
+          if (!document.getElementById('demo-canvas')) return;
+          t += 0.03;
+          const W = canvas.width;
+          const H = canvas.height;
+
+          const sky = ctx.createLinearGradient(0, 0, 0, H * 0.62);
+          sky.addColorStop(0, '#1B0E33');
+          sky.addColorStop(0.55, '#7B2CBF');
+          sky.addColorStop(1, '#F72585');
+          ctx.fillStyle = sky;
+          ctx.fillRect(0, 0, W, H * 0.62);
+
+          ctx.fillStyle = '#FFBE42';
+          ctx.beginPath();
+          ctx.arc(W * 0.5, H * 0.44, 68, 0, Math.PI * 2);
+          ctx.fill();
+
+          ctx.fillStyle = '#00B4D8';
+          ctx.fillRect(0, H * 0.56, W, 28);
+          ctx.fillStyle = '#130926';
+          ctx.fillRect(0, H * 0.62, W, H * 0.38);
+
+          ctx.fillStyle = '#FFBE42';
+          const offset = (t * 80) % 96;
+          for (let x = -offset; x < W + 96; x += 96) {
+            ctx.beginPath();
+            ctx.roundRect(x, H * 0.8, 44, 7, 3.5);
+            ctx.fill();
+          }
+
+          const carX = W * 0.5 + Math.sin(t * 0.8) * 90;
+          ctx.fillStyle = '#00B4D8';
+          ctx.beginPath();
+          ctx.roundRect(carX - 54, H * 0.72, 108, 30, 14);
+          ctx.fill();
+          ctx.fillStyle = '#251445';
+          ctx.beginPath();
+          ctx.roundRect(carX - 26, H * 0.66, 52, 18, 9);
+          ctx.fill();
+
+          ctx.fillStyle = 'rgba(15, 7, 32, 0.74)';
+          ctx.beginPath();
+          ctx.roundRect(W * 0.5 - 185, H - 54, 370, 34, 17);
+          ctx.fill();
+          ctx.fillStyle = '#FFF6E5';
+          ctx.font = '800 13px Nunito, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText('Live Stream Ready — Add YouTube link & API in config.json', W * 0.5, H - 32);
+
+          requestAnimationFrame(draw);
+        }
+        draw();
+      }
+
+      const adModal = document.getElementById('ad-modal');
+      const joinBtn = document.getElementById('join-queue-btn');
+      const closeAdBtn = document.getElementById('close-modal-btn');
+      const skipAdBtn = document.getElementById('skip-ad-btn');
+
+      joinBtn.addEventListener('click', () => {
+        sendTrack('join_click');
+        adModal.classList.add('open');
+      });
+      closeAdBtn.addEventListener('click', () => adModal.classList.remove('open'));
+      adModal.addEventListener('click', (e) => {
+        if (e.target === adModal) adModal.classList.remove('open');
+      });
+
+      skipAdBtn.addEventListener('click', () => {
+        sendTrack('final_play_click', {}, true);
+        window.location.assign(state.shortlinkUrl);
+      });
+
+      // ---------------- ADMIN LOGIN & ANALYTICS PANEL ----------------
+      const adminLoginModal = document.getElementById('admin-login-modal');
+      const adminPanelModal = document.getElementById('admin-panel-modal');
+      const openAdminLink = document.getElementById('open-admin-link');
+      const adminErr = document.getElementById('admin-login-error');
+      const adminSubmitBtn = document.getElementById('admin-login-submit');
+
+      function formatDuration(sec = 0) {
+        const s = Math.max(0, Math.round(sec));
+        const m = Math.floor(s / 60);
+        const r = s % 60;
+        return m > 0 ? `${m}m ${r}s` : `${r}s`;
+      }
+
+      function startLockoutCountdown(seconds) {
+        clearInterval(state.lockoutTimer);
+        let rem = seconds;
+        state.isLockedOut = true;
+        adminSubmitBtn.disabled = true;
+
+        const update = () => {
+          const m = Math.floor(rem / 60);
+          const s = rem % 60;
+          adminErr.style.display = 'block';
+          adminErr.textContent = `Locked for 10 min due to 3 wrong attempts. Try again in ${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+          if (rem <= 0) {
+            clearInterval(state.lockoutTimer);
+            state.isLockedOut = false;
+            adminSubmitBtn.disabled = false;
+            adminErr.style.display = 'none';
+          }
+          rem -= 1;
+        };
+        update();
+        state.lockoutTimer = setInterval(update, 1000);
+      }
+
+      async function openAdminDashboard() {
+        try {
+          const headers = state.adminToken
+            ? { Authorization: `Bearer ${state.adminToken}` }
+            : {};
+          const res = await fetch('/api/admin/dashboard', { credentials: 'include', headers });
+          if (!res.ok) {
+            safeStoreRemove(window.localStorage, 'playgta_admin_token');
+            state.adminToken = '';
+            adminLoginModal.classList.add('open');
+            return false;
+          }
+          const data = await res.json();
+          renderAdminDashboard(data);
+          adminPanelModal.classList.add('open');
+          return true;
+        } catch (err) {
+          adminErr.style.display = 'block';
+          adminErr.textContent = 'Could not load Admin Dashboard. Please try again.';
+          adminLoginModal.classList.add('open');
+          return false;
+        }
+      }
+
+      function renderAdminDashboard(data) {
+        const t = data.analytics.totals;
+        const hourly = data.analytics.hourly || [];
+        const sessions = data.analytics.recentSessions || [];
+        const cfg = data.config;
+
+        // 1. KPI Cards
+        document.getElementById('admin-kpis').innerHTML = `
+          <div class="kpi-card">
+            <div class="kpi-label">Total Page Visits</div>
+            <div class="kpi-val">${t.pageViews.toLocaleString()}</div>
+            <div class="kpi-sub">Unique sessions tracked</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Join Queue / Play Clicks</div>
+            <div class="kpi-val" style="color: var(--gold)">${t.joinQueueClicks.toLocaleString()}</div>
+            <div class="kpi-sub">${t.joinRate}% of visitors clicked</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Avg User Stay Time</div>
+            <div class="kpi-val" style="color: var(--cyan)">${formatDuration(t.avgStaySeconds)}</div>
+            <div class="kpi-sub">Across ${t.staySamples} sessions</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Skip Ad / Shortlink Clicks</div>
+            <div class="kpi-val" style="color: var(--teal)">${t.finalPlayClicks.toLocaleString()}</div>
+            <div class="kpi-sub">${t.completionRate}% of Join clicks</div>
+          </div>
+        `;
+
+        // 2. Funnel Chart
+        const maxVal = Math.max(1, t.pageViews);
+        const funnelItems = [
+          { label: 'Page Visits', val: t.pageViews, color: '#9D8DF1' },
+          { label: 'Join / Play Clicks', val: t.joinQueueClicks, color: '#FFBE42' },
+          { label: 'Skip Ad (Shortlink)', val: t.finalPlayClicks, color: '#2EC4B6' },
+        ];
+        document.getElementById('funnel-chart').innerHTML = funnelItems
+          .map(
+            (f) => `
+          <div class="funnel-row">
+            <span>${f.label}</span>
+            <div class="funnel-track">
+              <div class="funnel-bar" style="width:${Math.round((f.val / maxVal) * 100)}%; background:${f.color}"></div>
+            </div>
+            <span style="text-align:right">${f.val}</span>
+          </div>`
+          )
+          .join('');
+
+        // 3. Hourly Bar + Avg Stay SVG Chart
+        const W = 400;
+        const H = 175;
+        const maxH = Math.max(10, ...hourly.map((h) => h.visits || 0));
+        const barW = Math.floor(280 / Math.max(1, hourly.length));
+        const barsSvg = hourly
+          .map((h, i) => {
+            const x = 35 + i * (barW + 14);
+            const vh = Math.round(((h.visits || 0) / maxH) * 110);
+            const jh = Math.round(((h.joins || 0) / maxH) * 110);
+            return `
+              <rect x="${x}" y="${135 - vh}" width="${barW * 0.45}" height="${vh}" rx="4" fill="#7B2CBF" />
+              <rect x="${x + barW * 0.48}" y="${135 - jh}" width="${barW * 0.45}" height="${jh}" rx="4" fill="#FFBE42" />
+              <text x="${x + barW * 0.45}" y="152" text-anchor="middle" fill="#B8B0D0" font-size="10" font-weight="700">${h.label}</text>
+              <text x="${x + barW * 0.45}" y="166" text-anchor="middle" fill="#00B4D8" font-size="9" font-weight="800">${h.avgStay || 0}s</text>
+            `;
+          })
+          .join('');
+
+        document.getElementById('hourly-svg-chart').innerHTML = `
+          <svg viewBox="0 0 ${W} ${H}" width="100%" height="185" style="display:block">
+            <line x1="25" y1="135" x2="${W - 10}" y2="135" stroke="rgba(255,255,255,0.12)" />
+            ${barsSvg}
+          </svg>
+          <div style="display:flex; gap:14px; font-size:0.7rem; font-weight:800; color:var(--muted); margin-top:4px">
+            <span><span style="color:#7B2CBF">&#9632;</span> Visits</span>
+            <span><span style="color:#FFBE42">&#9632;</span> Join Clicks</span>
+            <span><span style="color:#00B4D8">&#9632;</span> Avg Stay (sec)</span>
+          </div>
+        `;
+
+        // 4. Recent User Sessions Table
+        document.getElementById('sessions-table').innerHTML = `
+          <thead>
+            <tr><th>Visitor</th><th>Stay Time</th><th>Join Click</th><th>Skip Ad Click</th></tr>
+          </thead>
+          <tbody>
+            ${sessions
+              .map(
+                (s) => `<tr>
+                <td style="font-family:monospace">${s.sessionId}</td>
+                <td style="color:var(--cyan)">${formatDuration(s.staySeconds)}</td>
+                <td>${s.clickedJoin ? 'Yes' : 'No'}</td>
+                <td style="color:${s.clickedFinalPlay ? 'var(--teal)' : 'var(--muted)'}">${s.clickedFinalPlay ? 'Yes' : 'No'}</td>
+              </tr>`
+              )
+              .join('')}
+          </tbody>
+        `;
+
+        // 5. Populate Config Form
+        document.getElementById('cfg-yt-url').value = cfg.youtubeStreamUrl || '';
+        document.getElementById('cfg-yt-key').value = cfg.hasYoutubeApiKey ? cfg.maskedYoutubeApiKey : '';
+        document.getElementById('cfg-shortlink-url').value = cfg.shortlinkUrl || '';
+        document.getElementById('cfg-title').value = cfg.streamTitle || '';
+      }
+
+      const adminPwInput = document.getElementById('admin-password');
+      const togglePwBtn = document.getElementById('toggle-admin-pw');
+      togglePwBtn.addEventListener('click', () => {
+        const showing = adminPwInput.type === 'text';
+        adminPwInput.type = showing ? 'password' : 'text';
+        togglePwBtn.textContent = showing ? 'Show' : 'Hide';
+      });
+
+      openAdminLink.addEventListener('click', () => {
+        if (!state.isLockedOut) {
+          adminSubmitBtn.disabled = false;
+          adminErr.style.display = 'none';
+        }
+        if (state.adminToken) openAdminDashboard();
+        else adminLoginModal.classList.add('open');
+      });
+
+      document
+        .getElementById('close-admin-login-btn')
+        .addEventListener('click', () => adminLoginModal.classList.remove('open'));
+      adminLoginModal.addEventListener('click', (e) => {
+        if (e.target === adminLoginModal) adminLoginModal.classList.remove('open');
+      });
+      document
+        .getElementById('close-admin-panel-btn')
+        .addEventListener('click', () => adminPanelModal.classList.remove('open'));
+      adminPanelModal.addEventListener('click', (e) => {
+        if (e.target === adminPanelModal) adminPanelModal.classList.remove('open');
+      });
+      document
+        .getElementById('admin-refresh-btn')
+        .addEventListener('click', openAdminDashboard);
+      document
+        .getElementById('admin-logout-btn')
+        .addEventListener('click', async () => {
+          await fetch('/api/admin/logout', { method: 'POST', credentials: 'include' }).catch(() => {});
+          safeStoreRemove(window.localStorage, 'playgta_admin_token');
+          state.adminToken = '';
+          adminPanelModal.classList.remove('open');
+        });
+
+      document.getElementById('admin-login-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (state.isLockedOut) return;
+        adminErr.style.display = 'none';
+        const email = document.getElementById('admin-email').value.trim();
+        const name = document.getElementById('admin-name').value.trim();
+        const password = adminPwInput.value.trim();
+
+        adminSubmitBtn.disabled = true;
+        adminSubmitBtn.textContent = 'Checking...';
+
+        try {
+          const res = await fetch('/api/admin/login', {
+            method: 'POST',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, name, password }),
+          });
+          const data = await res.json();
+
+          if (!res.ok) {
+            adminSubmitBtn.textContent = 'Login to Admin Panel';
+            if (data.locked && data.remainingSeconds) {
+              startLockoutCountdown(data.remainingSeconds);
+            } else {
+              adminSubmitBtn.disabled = false;
+              adminErr.style.display = 'block';
+              adminErr.textContent = data.error || 'Invalid credentials.';
+            }
+            return;
+          }
+
+          state.adminToken = data.token;
+          safeStoreSet(window.localStorage, 'playgta_admin_token', data.token);
+          adminPwInput.value = '';
+          adminSubmitBtn.disabled = false;
+          adminSubmitBtn.textContent = 'Login to Admin Panel';
+          adminLoginModal.classList.remove('open');
+          await openAdminDashboard();
+        } catch (err) {
+          adminSubmitBtn.disabled = false;
+          adminSubmitBtn.textContent = 'Login to Admin Panel';
+          adminErr.style.display = 'block';
+          adminErr.textContent = 'Connection error while logging in. Please try again.';
+        }
+      });
+
+      document.getElementById('admin-config-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const savedBox = document.getElementById('admin-cfg-saved');
+        savedBox.style.display = 'none';
+
+        const res = await fetch('/api/admin/config', {
+          method: 'POST',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(state.adminToken ? { Authorization: `Bearer ${state.adminToken}` } : {}),
+          },
+          body: JSON.stringify({
+            youtubeStreamUrl: document.getElementById('cfg-yt-url').value,
+            youtubeApiKey: document.getElementById('cfg-yt-key').value,
+            shortlinkUrl: document.getElementById('cfg-shortlink-url').value,
+            streamTitle: document.getElementById('cfg-title').value,
+          }),
+        });
+        if (res.ok) {
+          savedBox.style.display = 'block';
+          savedBox.textContent = 'Saved! YouTube link, API key & Shortlink URL updated.';
+          loadStreamInfo();
+          openAdminDashboard();
+        }
+      });
+
+      startDemoCanvas();
+      loadStreamInfo();
+    </script>
+    <script src="/adsense-config.js" defer></script>
+    <script src="/adsense.js" defer></script>
+  </body>
+</html>
