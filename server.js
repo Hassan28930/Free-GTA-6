@@ -28,12 +28,17 @@ const SESSION_SECRET =
 const loginAttempts = new Map();
 
 const app = express();
+app.disable('x-powered-by');
 app.set('trust proxy', true);
-app.use(compression());
-app.use(express.json());
-app.use(express.text({ type: 'text/plain' })); // support sendBeacon text/plain
+app.use(compression({ level: 4, threshold: 1024 }));
+app.use(express.json({ limit: '16kb' }));
+app.use(express.text({ type: 'text/plain', limit: '4kb' })); // support sendBeacon text/plain
 
 let ytCache = { fetchedAt: 0, data: null };
+let ytInFlight = null;
+let cachedFileConfig = null;
+const rawHtmlTemplate = fs.readFileSync(HTML_PATH, 'utf8');
+const renderedHtmlCache = new Map();
 
 function extractYouTubeId(input = '') {
   const s = String(input).trim();
@@ -61,7 +66,10 @@ function extractYouTubeId(input = '') {
 }
 
 function loadConfig() {
-  const fileCfg = JSON.parse(fs.readFileSync(CONFIG_PATH, 'utf8'));
+  if (!cachedFileConfig) {
+    cachedFileConfig = JSON.parse(fs.readFileSync(CONFIG_PATH, 'utf8'));
+  }
+  const fileCfg = cachedFileConfig;
   const youtubeStreamUrl = process.env.YOUTUBE_VIDEO_URL || fileCfg.youtubeStreamUrl || '';
   const youtubeApiKey = process.env.YOUTUBE_API_KEY || fileCfg.youtubeApiKey || '';
   const shortlinkUrl =
@@ -80,7 +88,9 @@ function loadConfig() {
 }
 
 function saveConfigFile(patch) {
-  const current = JSON.parse(fs.readFileSync(CONFIG_PATH, 'utf8'));
+  const current = cachedFileConfig
+    ? { ...cachedFileConfig }
+    : JSON.parse(fs.readFileSync(CONFIG_PATH, 'utf8'));
   if (typeof patch.youtubeStreamUrl === 'string') {
     current.youtubeStreamUrl = patch.youtubeStreamUrl.trim();
   }
@@ -97,6 +107,7 @@ function saveConfigFile(patch) {
   if (typeof patch.shortlinkUrl === 'string' && patch.shortlinkUrl.trim()) {
     current.shortlinkUrl = patch.shortlinkUrl.trim();
   }
+  cachedFileConfig = current;
   fs.writeFileSync(CONFIG_PATH, JSON.stringify(current, null, 2), 'utf8');
   ytCache = { fetchedAt: 0, data: null };
   return loadConfig();
@@ -104,29 +115,37 @@ function saveConfigFile(patch) {
 
 async function getYouTubeLiveStats(videoId, apiKey) {
   if (!videoId || !apiKey) return null;
-  if (ytCache.data && Date.now() - ytCache.fetchedAt < 30_000) {
+  if (ytCache.data && Date.now() - ytCache.fetchedAt < 60_000) {
     return ytCache.data;
   }
-  try {
-    const url = new URL('https://www.googleapis.com/youtube/v3/videos');
-    url.searchParams.set('part', 'snippet,liveStreamingDetails');
-    url.searchParams.set('id', videoId);
-    url.searchParams.set('key', apiKey);
-    const res = await fetch(url.toString());
-    const json = await res.json();
-    const item = json?.items?.[0];
-    if (!res.ok || !item) return null;
-    const data = {
-      title: item.snippet?.title || '',
-      concurrentViewers: item.liveStreamingDetails?.concurrentViewers
-        ? Number(item.liveStreamingDetails.concurrentViewers)
-        : null,
-    };
-    ytCache = { fetchedAt: Date.now(), data };
-    return data;
-  } catch {
-    return null;
-  }
+  if (ytInFlight) return ytInFlight;
+
+  ytInFlight = (async () => {
+    try {
+      const url = new URL('https://www.googleapis.com/youtube/v3/videos');
+      url.searchParams.set('part', 'snippet,liveStreamingDetails');
+      url.searchParams.set('id', videoId);
+      url.searchParams.set('key', apiKey);
+      const res = await fetch(url.toString(), { signal: AbortSignal.timeout(5000) });
+      const json = await res.json();
+      const item = json?.items?.[0];
+      if (!res.ok || !item) return ytCache.data || null;
+      const data = {
+        title: item.snippet?.title || '',
+        concurrentViewers: item.liveStreamingDetails?.concurrentViewers
+          ? Number(item.liveStreamingDetails.concurrentViewers)
+          : null,
+      };
+      ytCache = { fetchedAt: Date.now(), data };
+      return data;
+    } catch {
+      return ytCache.data || null;
+    } finally {
+      ytInFlight = null;
+    }
+  })();
+
+  return ytInFlight;
 }
 
 function getOrigin(req) {
@@ -248,6 +267,11 @@ app.get('/sitemap.xml', (req, res) => {
 </urlset>`);
 });
 
+// Lightweight healthcheck for Render
+app.get('/healthz', (_req, res) => {
+  res.status(200).type('text/plain').send('ok');
+});
+
 // Public stream info (API key stays server-side)
 app.get('/api/stream-info', async (_req, res) => {
   const cfg = loadConfig();
@@ -256,6 +280,7 @@ app.get('/api/stream-info', async (_req, res) => {
     ytStats?.concurrentViewers ??
     (cfg.liveWatching || 2639) + Math.floor(Math.sin(Date.now() / 10000) * 6);
 
+  res.setHeader('Cache-Control', 'public, max-age=15');
   res.json({
     siteName: cfg.siteName,
     streamTitle: ytStats?.title || cfg.streamTitle,
@@ -398,54 +423,55 @@ app.post('/api/admin/config', requireAdmin, (req, res) => {
   });
 });
 
-// Serve SEO-injected index.html
+// Serve SEO-injected index.html (cached per origin in RAM)
 app.get('/', (req, res) => {
   const origin = getOrigin(req);
-  const rawHtml = fs.readFileSync(HTML_PATH, 'utf8');
-  const title = 'Play GTA 6 Free Live Stream | Watch & Join Queue — PlayGTA';
-  const description =
-    'Watch the Grand Theft Auto VI (GTA 6) live stream in Vice City & Leonida, see live watching viewers, and click Join Queue / Play GTA 6 Free to unlock access.';
+  let html = renderedHtmlCache.get(origin);
+  if (!html) {
+    const title = 'Play GTA 6 Free Live Stream | Watch & Join Queue — PlayGTA';
+    const description =
+      'Watch the Grand Theft Auto VI (GTA 6) live stream in Vice City & Leonida, see live watching viewers, and click Join Queue / Play GTA 6 Free to unlock access.';
 
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@graph': [
-      {
-        '@type': 'WebSite',
-        name: 'PlayGTA',
-        url: `${origin}/`,
-        description,
-      },
-      {
-        '@type': 'VideoGame',
-        name: 'Grand Theft Auto VI',
-        alternateName: 'GTA 6',
-        datePublished: '2026-11-19',
-        gamePlatform: ['PlayStation 5', 'Xbox Series X|S'],
-        genre: ['Action-adventure', 'Open world'],
-        gameLocation: {
-          '@type': 'Place',
-          name: 'Vice City, State of Leonida',
+    const jsonLd = {
+      '@context': 'https://schema.org',
+      '@graph': [
+        {
+          '@type': 'WebSite',
+          name: 'PlayGTA',
+          url: `${origin}/`,
+          description,
         },
-        publisher: {
-          '@type': 'Organization',
-          name: 'Rockstar Games',
-        },
-      },
-      {
-        '@type': 'FAQPage',
-        mainEntity: FAQ_ITEMS.map((item) => ({
-          '@type': 'Question',
-          name: item.q,
-          acceptedAnswer: {
-            '@type': 'Answer',
-            text: item.a,
+        {
+          '@type': 'VideoGame',
+          name: 'Grand Theft Auto VI',
+          alternateName: 'GTA 6',
+          datePublished: '2026-11-19',
+          gamePlatform: ['PlayStation 5', 'Xbox Series X|S'],
+          genre: ['Action-adventure', 'Open world'],
+          gameLocation: {
+            '@type': 'Place',
+            name: 'Vice City, State of Leonida',
           },
-        })),
-      },
-    ],
-  };
+          publisher: {
+            '@type': 'Organization',
+            name: 'Rockstar Games',
+          },
+        },
+        {
+          '@type': 'FAQPage',
+          mainEntity: FAQ_ITEMS.map((item) => ({
+            '@type': 'Question',
+            name: item.q,
+            acceptedAnswer: {
+              '@type': 'Answer',
+              text: item.a,
+            },
+          })),
+        },
+      ],
+    };
 
-  const seoMeta = `
+    const seoMeta = `
   <title>${title}</title>
   <meta name="description" content="${description}" />
   <meta name="keywords" content="Play GTA 6 Free, GTA 6 Live Stream, Grand Theft Auto VI Vice City Leonida, Join Queue GTA 6" />
@@ -460,11 +486,26 @@ app.get('/', (req, res) => {
   <meta name="twitter:description" content="${description}" />
   <script type="application/ld+json">${JSON.stringify(jsonLd)}</script>`;
 
-  res.type('html').send(rawHtml.replace('<!--SEO_META-->', seoMeta));
+    html = rawHtmlTemplate.replace('<!--SEO_META-->', seoMeta);
+    if (renderedHtmlCache.size >= 10) {
+      renderedHtmlCache.clear();
+    }
+    renderedHtmlCache.set(origin, html);
+  }
+
+  res.setHeader('Cache-Control', 'public, max-age=60');
+  res.type('html').send(html);
 });
 
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public'), { index: false, maxAge: '5m' }));
 
-app.listen(PORT, '0.0.0.0', () => {
+const server = app.listen(PORT, '0.0.0.0', () => {
   console.log(`PlayGTA Simple Stream + Admin Analytics running on http://0.0.0.0:${PORT}`);
 });
+
+function shutdown() {
+  analytics.flush?.();
+  server.close(() => process.exit(0));
+}
+process.on('SIGTERM', shutdown);
+process.on('SIGINT', shutdown);
