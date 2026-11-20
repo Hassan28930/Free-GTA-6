@@ -2,8 +2,11 @@
   "name": "gta6-free-intro",
   "version": "1.0.0",
   "type": "module",
-  "description": "Clean, minimal, SEO-optimized GTA 6 10-minute free play intro & YouTube stream page with 4-step ad queue unlock.",
+  "description": "Clean, minimal, SEO-optimized GTA 6 live stream intro page with shortlink unlock and low-CPU Express backend.",
   "main": "server.js",
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "scripts": {
     "start": "node server.js"
   },

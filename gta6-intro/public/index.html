@@ -1099,7 +1099,9 @@
       }
 
       sendTrack('visit');
-      setInterval(() => sendTrack('heartbeat'), 10000);
+      setInterval(() => {
+        if (!document.hidden) sendTrack('heartbeat');
+      }, 30000);
       window.addEventListener('pagehide', () => sendTrack('heartbeat', {}, true));
 
       // ---------------- STREAM & SHORTLINK POPUP ----------------
@@ -1137,10 +1139,16 @@
         if (!canvas) return;
         const ctx = canvas.getContext('2d');
         let t = 0;
+        let lastFrame = 0;
 
-        function draw() {
+        function draw(now) {
           if (!document.getElementById('demo-canvas')) return;
-          t += 0.03;
+          if (document.hidden || (now && now - lastFrame < 50)) {
+            requestAnimationFrame(draw);
+            return;
+          }
+          lastFrame = now || 0;
+          t += 0.09;
           const W = canvas.width;
           const H = canvas.height;
 

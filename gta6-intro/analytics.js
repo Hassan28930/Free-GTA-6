@@ -102,7 +102,7 @@ class AnalyticsStore {
 
   writeSync(obj = this.data) {
     try {
-      fs.writeFileSync(ANALYTICS_PATH, JSON.stringify(obj, null, 2), 'utf8');
+      fs.writeFileSync(ANALYTICS_PATH, JSON.stringify(obj), 'utf8');
     } catch (err) {
       console.error('Failed to write analytics.json:', err.message);
     }
@@ -113,7 +113,15 @@ class AnalyticsStore {
     this.saveTimer = setTimeout(() => {
       this.saveTimer = null;
       this.writeSync();
-    }, 1000);
+    }, 15_000);
+  }
+
+  flush() {
+    if (this.saveTimer) {
+      clearTimeout(this.saveTimer);
+      this.saveTimer = null;
+      this.writeSync();
+    }
   }
 
   getCurrentHourBucket() {
